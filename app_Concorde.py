@@ -1,131 +1,232 @@
 import streamlit as st
-import time
 
-# --- CONFIGURATION DE LA PAGE (Moderne & Large) ---
+# --- CONFIGURATION DE LA PRÉSENTATION ---
 st.set_page_config(
-    page_title="Concorde: La Légende Supersonique",
+    page_title="The Concorde Presentation",
     page_icon="✈️",
-    layout="wide",  # Utilise toute la largeur de l'écran
-    initial_sidebar_state="collapsed"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# --- CSS PERSONNALISÉ (Pour quelques touches modernes supplémentaires) ---
-# Streamlit est limité en CSS natif, mais on peut injecter un peu de style
-# pour améliorer les titres et l'espacement.
+# --- STYLE CSS POUR LE MODE "TABLEAU DE CLASSE" (Texte Gros) ---
 st.markdown("""
     <style>
-    .main-header {
-        font-size: 3em !important;
-        color: #1E3A8A; /* Bleu nuit moderne */
-        text-align: center;
-        font-weight: 700;
+    /* Grossir tout le texte de base */
+    .stMarkdown p, .stMarkdown li {
+        font-size: 24px !important;
+        line-height: 1.6 !important;
     }
-    .sub-header {
-        font-size: 1.5em !important;
-        text-align: center;
-        color: #4B5563;
-        margin-bottom: 30px;
-    }
-    /* Amélioration visuelle des métriques */
-    [data-testid="stMetricValue"] {
-        font-size: 2.5rem !important;
-        color: #004e92;
-    }
+    /* Grossir les titres */
+    h1 { font-size: 60px !important; text-align: center; color: #1E3A8A; }
+    h2 { font-size: 45px !important; color: #DC2626; border-bottom: 2px solid #ccc; }
+    h3 { font-size: 35px !important; color: #1F2937; }
+    
+    /* Cacher les éléments parasites de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Style des encadrés d'info */
+    .stAlert { font-size: 20px !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SECTION HÉROS (Image d'intro) ---
-# Note: J'utilise des images Wikimedia publiques. Pour un vrai projet,
-# tu devrais télécharger ces images et les mettre dans ton dossier local.
-hero_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Concorde_on_Bristol_Filton_airfield_%28crop%29.jpg/1920px-Concorde_on_Bristol_Filton_airfield_%28crop%29.jpg"
+# --- NAVIGATION (SOMMAIRE) ---
+# On utilise la barre latérale comme télécommande pour changer de diapo
+slides = [
+    "1. Intro & Context",
+    "2. The Partnership",
+    "3. The Supersonic Race",
+    "4. Aerodynamics (Wings)",
+    "5. Engines & Speed",
+    "6. Cockpit Innovations",
+    "7. Life on Board",
+    "8. The End of the Dream",
+    "9. Conclusion & Legacy"
+]
 
-st.image(hero_image, use_column_width=True)
-st.markdown('<p class="main-header">LE CONCORDE</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">L\'ingénierie à la frontière du son</p>', unsafe_allow_html=True)
-st.markdown("---")
+st.sidebar.title("Navigation")
+current_slide = st.sidebar.radio("Go to slide:", slides)
+st.sidebar.markdown("---")
+st.sidebar.info("Tip: Appuie sur **F11** pour mettre ton navigateur en plein écran !")
 
-# --- SECTION 1 : LES STATS CLÉS (Tableau de bord moderne) ---
-st.header("⚡ Plus vite que le Soleil")
-st.write("Il volait si vite qu'en allant vers l'ouest, vous arriviez avant d'être parti (heure locale).")
+# --- CONTENU DES DIAPOSITIVES ---
 
-# Utilisation de 4 colonnes pour un affichage "dashboard"
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.metric(label="Vitesse Max", value="Mach 2.04", delta="2 179 km/h")
-with col2:
-    st.metric(label="Altitude de croisière", value="60 000 ft", delta="≈ 18 km d'altitude")
-with col3:
-    st.metric(label="Passagers", value="92 - 128", delta="Service exclusif")
-with col4:
-    # Exemple de petit calcul dynamique
-    ny_london_time = "≈ 3h 30min"
-    st.metric(label="Paris/Londres -> NYC", value=ny_london_time, delta="-4h vs vol normal", delta_color="inverse")
-
-st.markdown("---")
-
-# --- SECTION 2 : L'EXPÉRIENCE (Interactive) ---
-st.header("🕰️ La différence supersonique")
-
-# Création de deux colonnes : une pour le texte/contrôle, une pour le résultat visuel
-col_interact_text, col_interact_viz = st.columns([1, 2])
-
-with col_interact_text:
-    st.write("Comparez un vol long-courrier classique avec l'expérience Concorde.")
-    # Un slider pour rendre la page interactive
-    standard_flight = st.slider("Durée d'un vol subsonique classique (heures) :", min_value=6, max_value=14, value=8)
+# === SLIDE 1 : INTRODUCTION & CONTEXTE ===
+if current_slide == "1. Intro & Context":
+    st.title("THE CONCORDE: A Legend")
+    st.subheader("Context: The late 1950s & The Cold War")
     
-    # Calcul approximatif : Concorde allait environ 2.2x plus vite
-    concorde_duration = standard_flight / 2.2
-
-    if st.button("Calculer le temps Concorde 🚀"):
-        with st.spinner("Passage du mur du son..."):
-            time.sleep(0.8) # Petite pause pour l'effet dramatique
-        
-        st.balloons() # Effet visuel Streamlit
-        st.success(f"Temps de vol Concorde estimé : **{concorde_duration:.1f} heures**.")
-
-with col_interact_viz:
-    # Utilisation de barres de progression pour visualiser la différence
-    st.write(f"**Vol Classique ({standard_flight}h)**")
-    st.progress(100) # 100% du temps
+    col1, col2 = st.columns([1, 1])
     
-    st.write(f"**Vol Concorde (≈{concorde_duration:.1f}h)**")
-    # Calcul du pourcentage pour la barre de progression
-    progress_value = int((concorde_duration / standard_flight) * 100)
-    st.progress(progress_value)
-    st.caption("Le Concorde transformait un voyage fatigant en un simple déjeuner d'affaires.")
+    with col1:
+        st.markdown("""
+        * **Date:** Late 1950s - Early 1960s.
+        * **Context:** The **Cold War**. A race for technological superiority.
+        * **The Goal:** Show power through science and speed.
+        * **The Dream:** Cross the Atlantic in less than 4 hours.
+        """)
+        st.info("At this time, planes used propellers or early jets. Speed was the new frontier.")
 
+    with col2:
+        # Image d'époque symbolisant les années 60/Aviation
+        st.image("https://upload.wikimedia.org/wikipedia/commons/4/4e/Concorde_on_Bristol_Filton_airfield_%28crop%29.jpg", caption="The Concorde: Symbol of a new era.")
 
-st.markdown("---")
-
-# --- SECTION 3 : DESIGN ET INGÉNIERIE (Layout mixte) ---
-st.header("🎨 Une icône du design industriel")
-
-col_design_img, col_design_text = st.columns([1, 2])
-
-with col_design_img:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/0/08/Concorde_at_Filton.jpg", caption="Le célèbre 'nez basculant' (Droop Nose) en position basse.")
-
-with col_design_text:
-    st.subheader("L'aile Delta Ogivale")
-    st.write("""
-    Fruit d'une collaboration franco-britannique (Aérospatiale et BAC), le Concorde est immédiatement reconnaissable à son aile "delta ogivale". 
-    Cette forme complexe était le compromis parfait : suffisamment de portance à basse vitesse pour décoller, et une traînée minimale à Mach 2.
-    """)
+# === SLIDE 2 : PARTENARIAT ===
+elif current_slide == "2. The Partnership":
+    st.title("🇫🇷 A Historic Collaboration 🇬🇧")
     
-    # Utilisation d'un "expander" pour cacher les détails techniques et garder la page épurée
-    with st.expander("Pourquoi le nez bougeait-il ? (Le Droop Nose)"):
-        st.write("""
-        À cause de son aile delta, le Concorde devait atterrir avec un angle très cabré (le nez très haut). 
-        Les pilotes ne pouvaient donc pas voir la piste !
-        La solution ? Un nez hydraulique qui s'abaissait de 12,5 degrés pour le décollage et l'atterrissage, offrant une visibilité parfaite, avant de se relever pour le vol supersonique.
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/e/eb/Concorde_101_G-AXDN_filton.jpg", caption="British and French engineering combined.")
+    
+    with col2:
+        st.markdown("""
+        * **The Treaty:** Signed on **November 29, 1962**.
+        * **Countries:** France & Great Britain.
+        * **Companies:** * **Sud-Aviation** (became Aérospatiale) - *France*
+            * **British Aircraft Corporation (BAC)** - *UK*
+        """)
+        st.warning("They joined forces to share the colossal costs and knowledge.")
+
+# === SLIDE 3 : LA COURSE SUPERSONIQUE ===
+elif current_slide == "3. The Supersonic Race":
+    st.title("The Supersonic Race")
+    st.write("Europe was not alone. The whole world wanted to fly supersonic.")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.subheader("1. The Concorde")
+        st.image("https://upload.wikimedia.org/wikipedia/commons/f/f6/Air_France_Concorde.jpg")
+        st.write("🇪🇺 **Europe**")
+        st.write("Technologically successful.")
+
+    with col2:
+        st.subheader("2. Tupolev Tu-144")
+        st.image("https://upload.wikimedia.org/wikipedia/commons/4/41/Tupolev_Tu-144_on_the_MAKS-2011_%2803%29.jpg")
+        st.write("🇷🇺 **USSR**")
+        st.write("Nicknamed 'Concordski'. Faster but louder and unsafe.")
+
+    with col3:
+        st.subheader("3. Boeing 2707")
+        st.image("https://upload.wikimedia.org/wikipedia/commons/3/3d/Boeing_2707_mockup.jpg")
+        st.write("🇺🇸 **USA**")
+        st.write("Project cancelled in 1971 (Too expensive).")
+
+# === SLIDE 4 : CARACTÉRISTIQUES (AILES) ===
+elif current_slide == "4. Aerodynamics (Wings)":
+    st.title("Technological Marvel: The Wings")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        st.markdown("""
+        * **Shape:** "Gothic Delta Wings" (Ogival).
+        * **Why?** 1.  Extremely aerodynamic at **Mach 2**.
+            2.  Creates "Vortex Lift" at low speed (landing).
+        * **Specific:** No flaps or slats! The shape does everything.
+        """)
+    
+    with col2:
+        # Schéma ou photo des ailes
+        st.image("https://upload.wikimedia.org/wikipedia/commons/0/08/Concorde_at_Filton.jpg", caption="The Gothic Delta Wing shape.")
+
+# === SLIDE 5 : MOTEURS ===
+elif current_slide == "5. Engines & Speed":
+    st.title("Power: Rolls-Royce / SNECMA")
+    
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/9/93/Concorde_Olympus_593_afterburner.jpg", caption="Olympus 593 Turbojet with Afterburner.")
+    
+    with col2:
+        st.markdown("""
+        * **Engines:** 4x Olympus 593 turbojets.
+        * **Reheat (Afterburner):** Just like a fighter jet! Used for takeoff and breaking the sound barrier.
+        * **The System:** Movable intake ramps slowed the air down before entering the engine.
+        """)
+        st.success("**Max Speed:** Mach 2.04 (≈ 2,179 km/h)\n\n**Altitude:** 60,000 ft (Standard planes fly at 35,000 ft).")
+
+# === SLIDE 6 : INNOVATIONS COCKPIT ===
+elif current_slide == "6. Cockpit Innovations":
+    st.title("Decades Ahead of Time")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("The Droop Nose")
+        st.markdown("""
+        * **Problem:** Pilots couldn't see the runway during landing due to the steep angle.
+        * **Solution:** The nose tilted down by **12.5 degrees**.
+        """)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/a/a2/Concorde_Final_Flight_%28crop%29.jpg", caption="Nose down for landing.")
+
+    with col2:
+        st.subheader("Fly-By-Wire")
+        st.markdown("""
+        * **Revolution:** First airliner to use **electric flight orders** instead of mechanical cables.
+        * **Ancestor of FADEC:** Digital engine control.
+        * **Autopilot:** Could manage the plane entirely at Mach 2.
         """)
 
-st.markdown("---")
+# === SLIDE 7 : LA VIE A BORD ===
+elif current_slide == "7. Life on Board":
+    st.title("Flying Faster than the Sun")
+    
+    st.markdown("""
+    > "It turned a 12-hour journey into a short afternoon trip."
+    """)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric(label="Passengers", value="100", delta="Exclusive Service")
+        st.metric(label="Paris -> NYC", value="3h 30min", delta="-4h vs Boeing 747")
+    with col2:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/5/5e/Concorde_interior.jpg", caption="A narrow but luxury cabin.")
 
-# --- PIED DE PAGE ---
-st.subheader("🌅 La fin d'une ère")
-st.write("Retiré du service en 2003, victime de ses coûts d'exploitation, du 'bang' supersonique qui limitait ses routes au-dessus des océans, et du tragique crash de Gonesse en 2000. Il reste à ce jour le seul avion de ligne supersonique à avoir connu un succès commercial durable.")
+# === SLIDE 8 : LA FIN ===
+elif current_slide == "8. The End of the Dream":
+    st.title("Why did it stop?")
+    st.error("Retirement: 2003")
+    
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.markdown("""
+        **1. The Crash (Gonesse, 2000):**
+        * Flight 4590. A tire burst caused a fire.
+        * 113 fatalities. Broken trust.
+        
+        **2. Economics:**
+        * Ticket price was too high (€8,000+).
+        * Huge fuel consumption.
+        * Post-9/11 aviation crisis.
+        """)
+    
+    with col2:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/e/ee/Concorde_on_barge.jpg", caption="The Concorde became a museum piece.")
 
-st.caption("Développé avec Python & Streamlit. Images : Wikimedia Commons.")
+# === SLIDE 9 : CONCLUSION ===
+elif current_slide == "9. Conclusion & Legacy":
+    st.title("Conclusion: A Lasting Legacy")
+    
+    st.markdown("Even if Concorde stopped, it changed everything.")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.subheader("Airbus")
+        st.write("The cooperation proved Europe could build planes together.")
+    
+    with col2:
+        st.subheader("Technology")
+        st.write("Fly-by-wire & FADEC are now standard on all planes.")
+        
+    with col3:
+        st.subheader("The Future")
+        st.write("NASA X-59: Trying to make supersonic flight *silent*.")
+        st.image("https://upload.wikimedia.org/wikipedia/commons/c/ce/Low_Speed_Chase_Plane_Video_of_X-59_QueSST_%28NASA_Video%29.jpg", caption="NASA X-59")
+
+    st.markdown("---")
+    st.success("Thank you for listening! Would you have liked to fly on Concorde?")
