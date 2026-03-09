@@ -9,9 +9,14 @@ import diapo21, diapo22
 # Configuration
 st.set_page_config(page_title="Euro Silicon Valley - Présentation", layout="wide")
 
-# --- Taille des textes ---
+# --- Taille des textes et Marges ---
 st.markdown("""
 <style>
+    /* Réduire l'espace en haut de la page */
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
     html, body, p, li, .stMarkdown {
         font-size: 24px !important;
     }
@@ -80,7 +85,7 @@ pages_dict = {
 pages = list(pages_dict.keys())
 
 # --- MENU LATÉRAL & NAVIGATION ---
-st.sidebar.title("Sommaire")
+st.sidebar.title("summary")
 
 # On initialise la page actuelle dans la mémoire si elle n'existe pas
 if "page_actuelle" not in st.session_state:
