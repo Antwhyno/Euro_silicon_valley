@@ -2,6 +2,6 @@ import streamlit as st
 
 def show_page():
     st.header("Diapositive 22")
-    
+    st.write("THIS IS THE END")
     # Pour afficher l'image correspondante
-    st.image("images/Slide22.jpg", caption=" ", use_container_width=True)
+    #st.image("images/Slide22.jpg", caption=" ", use_container_width=True)

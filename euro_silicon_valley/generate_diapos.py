@@ -3,7 +3,7 @@ import os
 template = """import streamlit as st
 
 def show_page():
-    st.header("Diapositive {num}")
+    #st.header("Diapositive {num}")
     
     # Pour afficher l'image correspondante
     st.image("images/Slide{num}.jpg", caption=" ", use_container_width=True)
