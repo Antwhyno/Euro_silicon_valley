@@ -108,7 +108,7 @@ if col_next.button("Next ➡️"):
     st.rerun()
 
 selection = st.sidebar.radio(
-    "Aller à :", 
+    "Go to :", 
     pages, 
     key="page_actuelle"
 )

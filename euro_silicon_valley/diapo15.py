@@ -2,4 +2,6 @@ import streamlit as st
 
 def show_page():
     st.header("Diapositive 15")
-    st.write("Ceci est le contenu de la diapositive 15.")
+    
+    # Pour afficher l'image correspondante
+    st.image("images/Slide15.jpg", caption=" ", use_container_width=True)
